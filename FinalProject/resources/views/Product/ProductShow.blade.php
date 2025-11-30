@@ -5,7 +5,9 @@
          <div class="card">
             <div class="card-body">
                 <h2 class="fw-bold">Name: {{$product->name}}</h2>
-                <p class="card-text mb-0">Category: {{$product->category_id}}</p>
+                <p class="card-text mb-0">Category:
+                    {{ $product->category->name ?? 'No category' }}
+                </p>
                 <p class="card-text mb-0">Price: {{$product->price}}</p>
                 <p class="card-text mb-0">Description: {{$product->description}}</p>
                 <p class="card-text mb-0">Created At: {{ $product->created_at->format('d/m/Y') }}</p>

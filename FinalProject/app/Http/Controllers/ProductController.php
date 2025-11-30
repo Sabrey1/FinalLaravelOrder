@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use GuzzleHttp\Handler\Proxy;
 use Illuminate\Http\Request;
+use GuzzleHttp\Handler\Proxy;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Models\Category;
 
 class ProductController extends Controller
 {
@@ -13,8 +16,18 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $product = Product::all();
-        return view('Product.ProductList', compact('product'));
+        $products = DB::table('products')
+            ->leftJoin('categories', 'products.category_id', '=', 'categories.id')
+            ->select(
+                'products.id as id',
+                'products.name as name',
+                'products.price as price',
+                'products.description as description',
+                'categories.name as category_name'
+            )
+            ->get();
+
+        return view('Product.ProductList', compact('products'));
     }
 
     /**
@@ -22,7 +35,8 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('Product.productCreate');
+        $categories = Category::all();
+        return view('Product.productCreate', compact('categories'));
     }
 
     /**
@@ -51,7 +65,7 @@ class ProductController extends Controller
      */
     public function show(Product $product, $id)
     {
-        $product = Product::find($id);
+         $product = Product::with('category')->findOrFail($id);
         return view('Product.ProductShow', compact('product'));
     }
 
@@ -60,17 +74,23 @@ class ProductController extends Controller
      */
     public function edit(Product $product, $id)
     {
+         $categories = Category::all();
         $product = Product::find($id);
-        return view('Product.ProductEdit', compact('product'));
+        return view('Product.ProductEdit', compact('product', 'categories'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, Product $product, $id)
     {
-        $product->update($request->all());
+        $product = Product::find($id);
+        if($product){
+            $product->update($request->all());
         return redirect()->route('product.index')->with('update', 'Product updated successfully.');
+            // return redirect()->route('product.index');
+        }
+
     }
 
     /**

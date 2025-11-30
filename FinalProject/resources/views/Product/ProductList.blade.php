@@ -20,11 +20,12 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($product as $prod)
+                                @foreach ($products as $prod)
+
                                     <tr>
                                         <th scope="row">{{ $prod->id }}</th>
                                         <td>{{ $prod->name }}</td>
-                                        <td>{{ $prod->category_id }}</td>
+                                        <td>{{ $prod->category_name }}</td>
                                         <td>{{ $prod->price }}</td>
                                         <td>{{ $prod->description }}</td>
                                         <td>
