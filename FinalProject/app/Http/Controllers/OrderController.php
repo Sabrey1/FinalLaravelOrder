@@ -18,8 +18,6 @@ class OrderController extends Controller
         }
         $order = $query->paginate(10);
         return view('Order.OrderList', compact('order'));
-        // $order = Order::all();
-        // return view('Order.OrderList', compact('order'));
     }
 
     /**
@@ -46,7 +44,7 @@ class OrderController extends Controller
         $order -> product_id = $request->input('product_id');
         $order -> total_amount = $request->input('total_amount');
         $order->save();
-        return redirect()->route('order.index');
+        return redirect()->route('order.index')->with('create', 'Order saved successfully!');;
     }
 
     /**
@@ -74,7 +72,7 @@ class OrderController extends Controller
     {
         $order = Order::find($id);
         $order->update($request->all());
-        return redirect()->route('order.index');
+        return redirect()->route('order.index')->with('update', 'Order updated successfully!');
     }
 
     /**
@@ -84,6 +82,6 @@ class OrderController extends Controller
     {
         $order = Order::find($id);
         $order->delete();
-        return redirect()->route('order.index');
+        return redirect()->route('order.index')->with('delete', 'Order deleted successfully!');
     }
 }
