@@ -27,7 +27,7 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, $id)
+    public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -44,28 +44,35 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Category $category, $id)
+    public function show($id)
     {
         $category = Category::find($id);
-        return response()->json($category);
+        return view('Category.categoryShow', compact('category'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Category $category, $id)
+    public function edit($id)
     {
         $category = Category::find($id);
-        return view('Category.Edit', compact('category'));
+        return view('Category.categoryEdit', compact('category'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, $id)
     {
-        $category->update($request->all());
-        return redirect()->route('category.index');
+        $category = Category::find($id);
+        if(!$category){
+            return redirect()->route('category.index')->with('error', 'Category not found.');
+        }
+        else{
+            $category->update($request->all());
+            return redirect()->route('category.index');
+        }
+
     }
 
     /**

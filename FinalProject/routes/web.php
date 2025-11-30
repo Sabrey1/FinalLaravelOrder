@@ -16,10 +16,10 @@ Route::get('/', function () {
 
 Route::get('/category', [CategoryController::class, 'index'])->name('category.index');
 Route::get('/category/create', [CategoryController::class, 'create'])->name('category.create');
-Route::get('/category/edit', [CategoryController::class, 'edit'])->name('category.edit');
+Route::get('/category/edit/{id}', [CategoryController::class, 'edit'])->name('category.edit');
 Route::get('/category/show/{id}', [CategoryController::class, 'show'])->name('category.show');
 Route::post('/category', [CategoryController::class, 'store'])->name('category.store');
-Route::put('/category/update', [CategoryController::class, 'update'])->name('category.update');
+Route::put('/category/update/{id}', [CategoryController::class, 'update'])->name('category.update');
 Route::delete('/category/{id}', [CategoryController::class, 'destroy'])->name('category.destroy');
 
 
