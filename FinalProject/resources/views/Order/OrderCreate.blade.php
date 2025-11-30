@@ -5,28 +5,27 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Edit Order</div>
+                <div class="card-header">Create Order</div>
                 <div class="card-body">
-                    <form action="{{ route('order.update', $order->id) }}" method="POST">
+                    <form action="{{ route('order.store') }}" method="POST">
                         @csrf
-                        @method('PUT')
                         <div class="form-group">
                             <label for="name">Order Name</label>
-                            <input type="text" class="form-control" id="name" name="name" value="{{ $order->name }}" required>
+                            <input type="text" class="form-control" id="name" name="name" required>
                         </div>
                         <div class="form-group">
                             <label for="product_id">Product</label>
-                            <input type="text" class="form-control" id="product_id" name="product_id" value="{{ $order->product_id }}" required>
+                            <input type="text" class="form-control" id="product_id" name="product_id" required>
                         </div>
                         <div class="form-group">
                             <label for="quantity">Quantity</label>
-                            <input type="text" class="form-control" id="quantity" name="quantity" value="{{ $order->quantity }}" required>
+                            <input type="text" class="form-control" id="quantity" name="quantity" required>
                         </div>
                         <div class="form-group">
                             <label for="total_amount">Total Amount</label>
-                            <input type="text" class="form-control" id="total_amount" name="total_amount" value="{{ $order->total_amount }}" required>
+                            <input type="text" class="form-control" id="total_amount" name="total_amount" required>
                         </div>
-                        <button type="submit" class="btn btn-primary">Update order</button>
+                        <button type="submit" class="btn btn-primary">Create order</button>
                     </form>
                 </div>
             </div>

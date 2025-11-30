@@ -13,7 +13,7 @@ class OrderController extends Controller
     public function index()
     {
         $order = Order::all();
-        return response()->json($order);
+        return view('Order.OrderList', compact('order'));
     }
 
     /**
@@ -21,24 +21,26 @@ class OrderController extends Controller
      */
     public function create()
     {
-        return view('Order.Create');
+        return view('Order.OrderCreate');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, $id)
+    public function store(Request $request)
     {
         $request-> validate([
             'name'=> 'required',
-            'quantity' => 'quantity'
+            'quantity' => 'required'
         ]);
 
         $order = new Order();
-        $order-> name = $request('name');
-        $order -> quantity = $request('quantity');
-        $order -> product_id = $request('product_id');
-        $order -> total_amount = $request('total_amount');
+        $order-> name = $request->input('name');
+        $order -> quantity = $request->input('quantity');
+        $order -> product_id = $request->input('product_id');
+        $order -> total_amount = $request->input('total_amount');
+        $order->save();
+        return redirect()->route('order.index');
     }
 
     /**
@@ -47,7 +49,7 @@ class OrderController extends Controller
     public function show(Order $order, $id)
     {
         $order = Order::find($id);
-        return response()->json($order);
+        return view('Order.OrderShow', compact('order'));
     }
 
     /**
@@ -56,14 +58,15 @@ class OrderController extends Controller
     public function edit(Order $order, $id)
     {
         $order = Order::find($id);
-        return view('Order.Edit', compact('order'));
+        return view('Order.OrderEdit', compact('order'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Order $order)
+    public function update(Request $request, $id)
     {
+        $order = Order::find($id);
         $order->update($request->all());
         return redirect()->route('order.index');
     }
