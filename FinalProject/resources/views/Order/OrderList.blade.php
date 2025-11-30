@@ -29,7 +29,8 @@
                                 <tr>
                                     <th scope="col">ID</th>
                                     <th scope="col">Name</th>
-                                    <th scope="col">Product</th>
+                                    <th scope="col">Product Order</th>
+                                    <th scope="col">Product Price</th>
                                     <th scope="col">Quantity</th>
                                     <th scope="col">Total Amount</th>
                                     <th scope="col">Action</th>
@@ -38,12 +39,12 @@
                             <tbody>
                                 @foreach ($order as $ord)
                                     <tr>
-
                                         <th scope="row">{{ $loop->iteration }}</th>
                                         <td>{{ $ord->name }}</td>
-                                        <td>{{ $ord->product_id }}</td>
+                                        <td>{{ $ord->product_name }}</td>
+                                        <td>$ {{ $ord->product_price }}</td>
                                         <td>{{ $ord->quantity }}</td>
-                                        <td>{{ $ord->total_amount }}</td>
+                                        <td>$ {{ $ord->total_amount }}</td>
                                         <td>
                                             <a href="{{ route('order.show', $ord->id) }}" class="btn btn-info btn-sm">View</a>
                                             <a href="{{ route('order.edit', $ord->id) }}"  class="btn btn-warning btn-sm">Edit</a>

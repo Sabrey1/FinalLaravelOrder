@@ -6,6 +6,8 @@ use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Exports\OrdersExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Models\Product;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -25,11 +27,15 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Order::query();
+        $query = Order::leftJoin('products', 'orders.product_id', '=', 'products.id')
+        ->select('orders.*', 'products.name as product_name', 'products.price as product_price'); // select both
+
         if ($request->has('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+            $query->where('orders.name', 'like', '%' . $request->search . '%');
         }
+
         $order = $query->paginate(10);
+
         return view('Order.OrderList', compact('order'));
     }
 
@@ -38,7 +44,8 @@ class OrderController extends Controller
      */
     public function create()
     {
-        return view('Order.OrderCreate');
+        $products = Product::all();
+        return view('Order.OrderCreate', compact('products'));
     }
 
     /**
@@ -51,11 +58,18 @@ class OrderController extends Controller
             'quantity' => 'required'
         ]);
 
+        $product = Product::find($request->product_id);
+
+        if (!$product) {
+            return redirect()->back()->with('error', 'Invalid product!');
+        }
+        $totalAmount = $request->quantity * $product->price;
+
         $order = new Order();
         $order-> name = $request->input('name');
         $order -> quantity = $request->input('quantity');
         $order -> product_id = $request->input('product_id');
-        $order -> total_amount = $request->input('total_amount');
+        $order->total_amount = $totalAmount;
         $order->save();
         return redirect()->route('order.index')->with('create', 'Order saved successfully!');;
     }
@@ -65,7 +79,7 @@ class OrderController extends Controller
      */
     public function show(Order $order, $id)
     {
-        $order = Order::find($id);
+       $order = Order::with('product')->findOrFail($id);
         return view('Order.OrderShow', compact('order'));
     }
 
@@ -74,8 +88,9 @@ class OrderController extends Controller
      */
     public function edit(Order $order, $id)
     {
+        $product = Product::all();
         $order = Order::find($id);
-        return view('Order.OrderEdit', compact('order'));
+        return view('Order.OrderEdit', compact('order', 'product'));
     }
 
     /**
@@ -84,9 +99,20 @@ class OrderController extends Controller
     public function update(Request $request, $id)
     {
         $order = Order::find($id);
-        $order->update($request->all());
+
+        $product = Product::find($request->product_id);
+
+        $totalAmount = $request->quantity * $product->price;
+
+        $order->name = $request->name;
+        $order->quantity = $request->quantity;
+        $order->product_id = $request->product_id;
+        $order->total_amount = $totalAmount;
+        $order->save();
+
         return redirect()->route('order.index')->with('update', 'Order updated successfully!');
     }
+
 
     /**
      * Remove the specified resource from storage.

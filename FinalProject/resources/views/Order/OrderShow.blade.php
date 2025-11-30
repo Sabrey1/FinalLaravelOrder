@@ -5,7 +5,9 @@
          <div class="card">
             <div class="card-body">
                 <h2 class="fw-bold">Name: {{$order->name}}</h2>
-                <p class="card-text mb-0">Product: {{$order->product_id}}</p>
+                <p class="card-text mb-0">Product:
+                    {{ $order->product->name ?? 'No product' }}
+                </p>
                 <p class="card-text mb-0">Quantity: {{$order->quantity}}</p>
                 <p class="card-text mb-0">Total Amount: {{$order->total_amount}}</p>
                 <p class="card-text mb-0">Created At: {{ $order->created_at->format('d/m/Y') }}</p>
