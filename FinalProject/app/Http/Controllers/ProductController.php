@@ -43,7 +43,7 @@ class ProductController extends Controller
         // $product->image = $request('image');
         $product->save();
 
-        return redirect()->route('product.index');
+        return redirect()->route('product.index')->with('create', 'Product created successfully.');
     }
 
     /**
@@ -70,7 +70,7 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $product->update($request->all());
-        return redirect()->route('product.index');
+        return redirect()->route('product.index')->with('update', 'Product updated successfully.');
     }
 
     /**
@@ -80,6 +80,6 @@ class ProductController extends Controller
     {
         $product = Product::find($id);
         $product->delete();
-        return redirect()->route('product.index');
+        return redirect()->route('product.index')->with('delete', 'Product deleted successfully.');
     }
 }

@@ -8,7 +8,13 @@
 
                     <div class="card-body">
                         <table class="table">
-                              <a href="{{route('order.create')}}" class="btn btn-primary mb-3">Add New Order</a>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <a href="{{route('order.create')}}" class="btn btn-primary mb-3">Add New Order</a>
+                                <a href="{{ route('orders.export.all') }}" class="btn btn-success">Export All</a>
+
+                            </div>
+
+
                                 <div class="mb-3">
                                     <form action="{{ route('order.index') }}" method="GET">
                                         <div style="display:flex; gap:10px;">
@@ -46,6 +52,9 @@
                                                 @method('DELETE')
                                                 <button type="button" class="btn btn-danger btn-sm" onclick="return confirmDelete({{ $ord->id }})">Delete</button>
                                             </form>
+                                            <a href="{{ route('orders.export.id', $ord->id) }}" class="btn btn-info btn-sm">
+                                                Export
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforeach

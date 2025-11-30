@@ -4,7 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
-
+use App\Exports\OrdersExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -13,6 +14,11 @@ use App\Http\Controllers\OrderController;
 Route::get('/', function () {
     return view('layouts.app');
 })->name('app');
+
+// Route::get('/orders/export', function () {
+//     return Excel::download(new OrdersExport, 'orders.xlsx');
+// });
+
 
 Route::get('/category', [CategoryController::class, 'index'])->name('category.index');
 Route::get('/category/create', [CategoryController::class, 'create'])->name('category.create');
@@ -39,3 +45,5 @@ Route::get('/order/show/{id}', [OrderController::class, 'show'])->name('order.sh
 Route::post('/order', [OrderController::class, 'store'])->name('order.store');
 Route::put('/order/update/{id}', [OrderController::class, 'update'])->name('order.update');
 Route::delete('/order/{id}', [OrderController::class, 'destroy'])->name('order.destroy');
+Route::get('/orders/export-all', [OrderController::class, 'exportAll'])->name('orders.export.all');
+Route::get('/orders/export/{id}', [OrderController::class, 'exportById'])->name('orders.export.id');

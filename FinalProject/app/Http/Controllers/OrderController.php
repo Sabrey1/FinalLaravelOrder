@@ -4,9 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use Illuminate\Http\Request;
+use App\Exports\OrdersExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class OrderController extends Controller
 {
+
+     public function exportAll()
+    {
+        return Excel::download(new OrdersExport(), 'orders_all.xlsx');
+    }
+
+    // Export by ID
+    public function exportById($id)
+    {
+        return Excel::download(new OrdersExport($id), "order_$id.xlsx");
+    }
     /**
      * Display a listing of the resource.
      */
