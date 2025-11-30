@@ -9,6 +9,16 @@
                     <div class="card-body">
                         <table class="table">
                               <a href="{{route('order.create')}}" class="btn btn-primary mb-3">Add New Order</a>
+                                <div class="mb-3">
+                                    <form action="{{ route('order.index') }}" method="GET">
+                                        <div style="display:flex; gap:10px;">
+                                            <input type="text" name="search" class="form-control me-2" placeholder="Search by name or product" value="{{ $search ?? '' }}">
+                                        <button type="submit" class="btn btn-primary">Search</button>
+                                        <a href="{{ route('order.index') }}" class="btn btn-secondary ms-2">Clear</a>
+                                        </div>
+
+                                    </form>
+                                </div>
                             <thead>
                                 <tr>
                                     <th scope="col">ID</th>
@@ -22,7 +32,8 @@
                             <tbody>
                                 @foreach ($order as $ord)
                                     <tr>
-                                        <th scope="row">{{ $ord->id }}</th>
+
+                                        <th scope="row">{{ $loop->iteration }}</th>
                                         <td>{{ $ord->name }}</td>
                                         <td>{{ $ord->product_id }}</td>
                                         <td>{{ $ord->quantity }}</td>
@@ -40,6 +51,9 @@
                                 @endforeach
                             </tbody>
                         </table>
+                        <div class="d-flex justify-content-center">
+                       {{ $order->links('pagination::bootstrap-5') }}
+                    </div>
                     </div>
                 </div>
             </div>

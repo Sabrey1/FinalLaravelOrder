@@ -10,10 +10,16 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $order = Order::all();
+        $query = Order::query();
+        if ($request->has('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+        $order = $query->paginate(10);
         return view('Order.OrderList', compact('order'));
+        // $order = Order::all();
+        // return view('Order.OrderList', compact('order'));
     }
 
     /**
