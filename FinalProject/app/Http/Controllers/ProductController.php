@@ -14,7 +14,7 @@ class ProductController extends Controller
     public function index()
     {
         $product = Product::all();
-        return response()->json($product);
+        return view('Product.ProductList', compact('product'));
     }
 
     /**
@@ -22,13 +22,13 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('Product.Create');
+        return view('Product.productCreate');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request,$id)
+    public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -36,10 +36,10 @@ class ProductController extends Controller
 
         ]);
         $product = new Product();
-        $product->name = $request('name');
-        $product->category_id = $request('category_id');
-        $product->price = $request('price');
-        $product->description = $request('description');
+        $product->name = $request->input('name');
+        $product->category_id = $request->input('category_id');
+        $product->price = $request->input('price');
+        $product->description = $request->input('description');
         // $product->image = $request('image');
         $product->save();
 
@@ -52,7 +52,7 @@ class ProductController extends Controller
     public function show(Product $product, $id)
     {
         $product = Product::find($id);
-        return response()->json($product);
+        return view('Product.ProductShow', compact('product'));
     }
 
     /**
@@ -61,7 +61,7 @@ class ProductController extends Controller
     public function edit(Product $product, $id)
     {
         $product = Product::find($id);
-        return view('Product.Edit', compact('product'));
+        return view('Product.ProductEdit', compact('product'));
     }
 
     /**
