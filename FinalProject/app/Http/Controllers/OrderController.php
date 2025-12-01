@@ -29,16 +29,15 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Order::leftJoin('products', 'orders.product_id', '=', 'products.id')
-        ->select('orders.*', 'products.name as product_name', 'products.price as product_price'); // select both
+        $query = Order::with(['products', 'customer']);
 
         if ($request->has('search')) {
-            $query->where('orders.name', 'like', '%' . $request->search . '%');
+            $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        $order = $query->paginate(10);
+        $orders = $query->paginate(10);
 
-        return view('Order.OrderList', compact('order'));
+        return view('Order.OrderList', compact('orders'));
     }
 
     /**
@@ -54,30 +53,40 @@ class OrderController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        $request-> validate([
-            'name'=> 'required',
-            'quantity' => 'required'
+   public function store(Request $request)
+{
+    $request->validate([
+        'name' => 'required|string',
+        'customer_id' => 'required|exists:customers,id',
+        'products.*' => 'required|exists:products,id',
+        'quantities.*' => 'required|integer|min:1',
+    ]);
+
+    $order = Order::create([
+        'name' => $request->name,
+        'customer_id' => $request->customer_id,
+    ]);
+
+    $total = 0;
+
+    foreach ($request->products as $index => $productId) {
+        $product = Product::find($productId);
+        $quantity = $request->quantities[$index];
+        $price = $product->price;
+
+        $order->products()->attach($productId, [
+            'quantity' => $quantity,
+            'price' => $price
         ]);
 
-        $product = Product::find($request->product_id);
-
-        if (!$product) {
-            return redirect()->back()->with('error', 'Invalid product!');
-        }
-
-        $totalAmount = $request->quantity * $product->price;
-
-        $order = new Order();
-        $order-> name = $request->input('name');
-        $order -> quantity = $request->input('quantity');
-        $order -> product_id = $request->input('product_id');
-        $order -> customer_id = $request->input('customer_id');
-        $order->total_amount = $totalAmount;
-        $order->save();
-        return redirect()->route('order.index')->with('create', 'Order saved successfully!');;
+        $total += $price * $quantity;
     }
+
+    $order->update(['total_amount' => $total]);
+
+    return redirect()->route('order.index')->with('success', 'Order created successfully!');
+}
+
 
     /**
      * Display the specified resource.
@@ -85,7 +94,7 @@ class OrderController extends Controller
     public function show(Order $order, $id)
     {
 
-       $order = Order::with('product', 'customer')->findOrFail($id);
+       $order = Order::with('products', 'customer')->findOrFail($id);
         return view('Order.OrderShow', compact('order'));
     }
 
@@ -104,22 +113,44 @@ class OrderController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
-    {
-        $order = Order::find($id);
+   public function update(Request $request, $id)
+{
+    $request->validate([
+        'name' => 'required|string',
+        'customer_id' => 'required|exists:customers,id',
+        'products.*' => 'required|exists:products,id',
+        'quantities.*' => 'required|integer|min:1',
+    ]);
 
-        $product = Product::find($request->product_id);
+    $order = Order::findOrFail($id);
 
-        $totalAmount = $request->quantity * $product->price;
+    // Update order info
+    $order->update([
+        'name' => $request->name,
+        'customer_id' => $request->customer_id,
+    ]);
 
-        $order->name = $request->name;
-        $order->quantity = $request->quantity;
-        $order->product_id = $request->product_id;
-        $order->total_amount = $totalAmount;
-        $order->save();
-
-        return redirect()->route('order.index')->with('update', 'Order updated successfully!');
+    // Sync products with pivot table
+    $syncData = [];
+    foreach ($request->products as $index => $productId) {
+        $product = Product::find($productId);
+        $syncData[$productId] = [
+            'quantity' => $request->quantities[$index],
+            'price' => $product->price
+        ];
     }
+    $order->products()->sync($syncData);
+
+    // Update total amount
+    $total = array_sum(array_map(function($item) {
+        return $item['quantity'] * $item['price'];
+    }, $syncData));
+
+    $order->update(['total_amount' => $total]);
+
+    return redirect()->route('order.index')->with('update', 'Order updated successfully!');
+}
+
 
 
     /**
