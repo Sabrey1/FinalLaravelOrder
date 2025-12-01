@@ -29,14 +29,12 @@
                             </select>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">Select Products</label>
-                            <select name="product_id[]" id="product_id" class="form-select select2" multiple>
+                        <label for="product">Product</label>
+                            <select name="product_id" id="product" class="w-full rounded-sm">
                                 @foreach($products as $product)
-                                    <option value="{{ $product->id }}">{{ $product->name }}</option>
+                                    <option value="{{ $product->id }}">{{ $product->name }} - ${{ $product->price }}</option>
                                 @endforeach
                             </select>
-                        </div>
 
                         <div class="mb-3">
                             <label class="form-label">Quantity</label>

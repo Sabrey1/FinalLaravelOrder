@@ -66,12 +66,14 @@ class OrderController extends Controller
         if (!$product) {
             return redirect()->back()->with('error', 'Invalid product!');
         }
+
         $totalAmount = $request->quantity * $product->price;
 
         $order = new Order();
         $order-> name = $request->input('name');
         $order -> quantity = $request->input('quantity');
         $order -> product_id = $request->input('product_id');
+        $order -> customer_id = $request->input('customer_id');
         $order->total_amount = $totalAmount;
         $order->save();
         return redirect()->route('order.index')->with('create', 'Order saved successfully!');;
