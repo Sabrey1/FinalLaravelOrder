@@ -25,7 +25,7 @@
                 <label for="description">Description</label>
                 <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
             </div>
-            <button type="submit" class="btn btn-primary mt-3">Create Category</button>
+            <button type="submit" class="btn btn-primary mt-3">Create Product</button>
         </form>
     </div>
 @endsection

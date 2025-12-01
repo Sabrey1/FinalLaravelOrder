@@ -64,10 +64,19 @@
             </ul>
           </li> --}}
           <li class="nav-item">
+            <a href="{{route('customer.index')}}" class="nav-link">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Customer
+                <span class="right badge badge-danger">New</span>
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
             <a href="{{route('category.index')}}" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
               <p>
-                category
+                Category
                 <span class="right badge badge-danger">New</span>
               </p>
             </a>

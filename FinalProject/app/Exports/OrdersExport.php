@@ -22,9 +22,11 @@ class OrdersExport implements FromCollection, WithHeadings, ShouldAutoSize, With
     {
         $query = DB::table('orders')
             ->leftJoin('products', 'orders.product_id', '=', 'products.id')
+            ->leftJoin('customers', 'orders.customer_id', '=', 'customers.id')
             ->select(
                 'orders.id',
                 'orders.name',
+                'customers.name as customer_name',
                 'products.name as product_name',
                 'orders.quantity',
                 'products.price',
@@ -46,6 +48,7 @@ class OrdersExport implements FromCollection, WithHeadings, ShouldAutoSize, With
         return [
             $row->id,
             $row->name,
+            $row->customer_name ?? 'N/A',
             $row->product_name ?? 'N/A',
             $row->quantity,
             $row->price,
@@ -61,6 +64,7 @@ class OrdersExport implements FromCollection, WithHeadings, ShouldAutoSize, With
         return [
             'ID',
             'Order Name',
+            'Customer Name',
             'Product Name',
             'Quantity',
             'Product Price',

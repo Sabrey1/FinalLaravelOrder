@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\CustomerController;
 use App\Exports\OrdersExport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -19,6 +20,14 @@ Route::get('/', function () {
 //     return Excel::download(new OrdersExport, 'orders.xlsx');
 // });
 
+
+Route::get('/customer', [CustomerController::class, 'index'])->name('customer.index');
+Route::get('/customer/create', [CustomerController::class, 'create'])->name('customer.create');
+Route::get('/customer/edit/{id}', [CustomerController::class, 'edit'])->name('customer.edit');
+Route::get('/customer/show/{id}', [CustomerController::class, 'show'])->name('customer.show');
+Route::post('/customer', [CustomerController::class, 'store'])->name('customer.store');
+Route::put('/customer/update/{id}', [CustomerController::class, 'update'])->name('customer.update');
+Route::delete('/customer/{id}', [CustomerController::class, 'destroy'])->name('customer.destroy');
 
 Route::get('/category', [CategoryController::class, 'index'])->name('category.index');
 Route::get('/category/create', [CategoryController::class, 'create'])->name('category.create');

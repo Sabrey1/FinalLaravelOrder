@@ -13,8 +13,12 @@ class Order extends Model
         'total_amount',
     ];
 
-    public function product()
+    public function products()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsToMany(Product::class)->withPivot('quantity');
+    }
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
     }
 }

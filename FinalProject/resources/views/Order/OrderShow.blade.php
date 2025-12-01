@@ -1,10 +1,12 @@
 @extends('layouts.app')
 @section('content')
     <div >
+        {{-- {{$order}} --}}
         <h1>Order Details</h1>
          <div class="card">
             <div class="card-body">
                 <h2 class="fw-bold">Name: {{$order->name}}</h2>
+                <p class="card-text mb-0">Customer: {{$order->customer->name ?? 'No customer'}}</p>
                 <p class="card-text mb-0">Product:
                     {{ $order->product->name ?? 'No product' }}
                 </p>

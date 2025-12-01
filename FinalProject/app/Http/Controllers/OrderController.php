@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\Product;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 use App\Exports\OrdersExport;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Models\Product;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
 
 class OrderController extends Controller
 {
@@ -44,8 +46,9 @@ class OrderController extends Controller
      */
     public function create()
     {
+        $customers = Customer::all();
         $products = Product::all();
-        return view('Order.OrderCreate', compact('products'));
+        return view('Order.OrderCreate', compact('customers', 'products'));
     }
 
     /**
@@ -79,7 +82,8 @@ class OrderController extends Controller
      */
     public function show(Order $order, $id)
     {
-       $order = Order::with('product')->findOrFail($id);
+
+       $order = Order::with('product', 'customer')->findOrFail($id);
         return view('Order.OrderShow', compact('order'));
     }
 
@@ -88,9 +92,11 @@ class OrderController extends Controller
      */
     public function edit(Order $order, $id)
     {
-        $product = Product::all();
+
+        $customers = Customer::all();
+        $products = Product::all();
         $order = Order::find($id);
-        return view('Order.OrderEdit', compact('order', 'product'));
+        return view('Order.OrderEdit', compact('order', 'customers', 'products'));
     }
 
     /**
